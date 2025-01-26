@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salary Statement Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        margin: 0;
+        padding: 40px;
+        color: #333333;
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in-out, slideUp 0.5s ease-out;
+      }
+      .header {
+        text-align: center;
+        border-bottom: 4px solid #3498db;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 32px;
+        color: #2c3e50;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .header h2,
+      .header h3 {
+        margin: 10px 0;
+        font-size: 18px;
+        color: #34495e;
+        font-weight: 400;
+      }
+      .details,
+      .salary-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .details td,
+      .salary-table td,
+      .salary-table th {
+        border: 1px solid #e0e0e0;
+        padding: 15px;
+        transition: background-color 0.3s ease;
+      }
+      .details tr:nth-child(even),
+      .salary-table tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+      .details tr:hover,
+      .salary-table tr:hover {
+        background-color: #e8f4f8;
+      }
+      .details th,
+      .salary-table th {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        text-align: left;
+        background-color: #3498db;
+        color: white;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .authorized-signatory {
+        margin-top: 30px;
+        text-align: right;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+      .contact {
+        font-size: 14px;
+        color: #7f8c8d;
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 24px;
+        margin: 10px 5px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        border-radius: 30px;
+        text-decoration: none;
+        color: white;
+        background-color: #2ecc71;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+      }
+      .button:hover {
+        background-color: #27ae60;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(39, 174, 96, 0.3);
+      }
+      #payslipContainer {
+        margin-top: 30px;
+      }
+      .title {
+        font-size: 36px;
+        font-weight: 700;
+        color: #2c3e50;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 30px;
+        letter-spacing: 2px;
+      }
+      .sub-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #34495e;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .heading {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2c3e50;
+        text-align: left;
+        margin-bottom: 15px;
+      }
+      .file-upload {
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+      .file-upload input[type="file"] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+      }
+      .file-upload-button {
+        display: inline-block;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        border-radius: 30px;
+        text-decoration: none;
+        color: white;
+        background-color: #3498db;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+      }
+      .file-upload-button:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(41, 128, 185, 0.3);
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 2px solid #bdc3c7;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+      }
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #3498db;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slideUp {
+        from { transform: translateY(20px); }
+        to { transform: translateY(0); }
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">Salary Statement Generator</h1>
+      <div class="file-upload">
+        <button class="file-upload-button">Choose Excel File</button>
+        <input type="file" id="fileUpload" accept=".xlsx" />
+      </div>
+      <br />
+      <label for="employeeId" class="heading">Enter Employee ID:</label>
+      <input type="text" id="employeeId" placeholder="e.g., EMP001" />
+      <button class="button" onclick="generatePayslip()">Generate Payslip</button>
+      <br /><br />
+      <div id="payslipContainer"></div>
+    </div>
+
+    <script>
+      let employeeData = {};
+
+      document
+        .getElementById("fileUpload")
+        .addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const data = new Uint8Array(event.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = XLSX.utils.sheet_to_json(
+              workbook.Sheets[sheetName]
+            );
+
+            worksheet.forEach((row) => {
+              employeeData[row["Employee ID"]] = row;
+            });
+            alert("File successfully uploaded and processed!");
+          };
+          reader.readAsArrayBuffer(file);
+        });
+
+      function generatePayslip() {
+        const employeeId = document.getElementById("employeeId").value;
+        const employee = employeeData[employeeId];
+
+        if (employee) {
+          const payslipHTML = `
+            <div class="container" id="payslip">
+              <div class="header">
+                <h1>SYMBIOSYS TECHNOLOGIES</h1>
+                <h2>Plot No 1 & 2, Hill no-2, IT Park,<br>
+                  Rushikonda, Visakhapatnam-45<br>
+                  Ph: 2550369, 2596567</h2>
+                <h3>SALARY STATEMENT FOR THE MONTH OF JULY 2024</h3>
+              </div>
+              <table class="details">
+                <tr>
+                  <th>Employee Code</th>
+                  <td>${employee["Employee ID"] || ""}</td>
+                  <th>Date of Joining</th>
+                  <td>${
+                    employee["Date of Joining"]
+                      ? new Date(
+                          employee["Date of Joining"]
+                        ).toLocaleDateString("en-GB")
+                      : ""
+                  }</td>
+                </tr>
+                <tr>
+                  <th>Employee Name</th>
+                  <td>${employee["Employee Name"] || ""}</td>
+                  <th>Employment Status</th>
+                  <td>${employee["Employment status"] || ""}</td>
+                </tr>
+                <tr>
+                  <th>Designation</th>
+                  <td>${employee["Designation"] || ""}</td>
+                  <th>Statement for the month</th>
+                  <td>${employee["Statement for the month"] || ""}</td>
+                </tr>
+              </table>
+              <table class="salary-table">
+                <tr>
+                  <th>Classified Income</th>
+                  <th>Amount (Rs.)</th>
+                  <th>Deductions</th>
+                  <th>Amount (Rs.)</th>
+                </tr>
+                <tr>
+                  <td>Basic Pay</td>
+                  <td>${employee["Basic Pay"] || "0.00"}</td>
+                  <td>Professional Tax</td>
+                  <td>${employee["Professional Tax"] || "0.00"}</td>
+                </tr>
+                <tr>
+                  <td>House Rent Allowance</td>
+                  <td>${employee["House Rent Allowance"] || "0.00"}</td>
+                  <td>Income Tax</td>
+                  <td>${employee["Income Tax"] || "0.00"}</td>
+                </tr>
+                <tr>
+                  <td>City Compensatory Allowance</td>
+                  <td>${employee["City Compensatory Allowance"] || "0.00"}</td>
+                  <td>Provident Fund</td>
+                  <td>${employee["Provident Fund"] || "0.00"}</td>
+                </tr>
+                <tr>
+                  <td>Travel Allowance</td>
+                  <td>${employee["Travel Allowance"] || "0.00"}</td>
+                  <td>ESI</td>
+                  <td>${employee["ESI"] || "0.00"}</td>
+                </tr>
+                <tr>
+                  <td>Food Allowance</td>
+                  <td>${employee["Food Allowance"] || "0.00"}</td>
+                  <td>Leaves - Loss of Pay</td>
+                  <td>${employee["Leaves - Loss of Pay"] || "0.00"}</td>
+                </tr>
+                <tr>
+                  <td>Performance Incentives</td>
+                  <td>${employee["Performance Incentives"] || "0.00"}</td>
+                  <td>Others</td>
+                  <td>${employee["Others"] || "0.00"}</td>
+                </tr>
+              </table>
+              <table class="salary-table">
+                <tr>
+                  <th>Gross Pay</th>
+                  <td>${employee["GROSS PAY"] || "0.00"}</td>
+                  <th>Deductions</th>
+                  <td>${employee["DEDUCTIONS"] || "0.00"}</td>
+                  <th>Net Pay</th>
+                  <td>${employee["NET PAY"] || "0.00"}</td>
+                </tr>
+              </table>
+              <div class="authorized-signatory">
+                <p>AUTHORIZED SIGNATORY</p>
+                <p>Sudheer<br>H.R Executive</p>
+              </div>
+              <div class="contact">
+                <p>We request you to verify employment details with our office on email: hr@symbiosystech.com. (+91-0891-2550369)</p>
+              </div>
+              <button class="button" onclick="downloadPayslip()">Download Payslip</button>
+            </div>
+          `;
+          document.getElementById("payslipContainer").innerHTML = payslipHTML;
+        } else {
+          alert("Employee ID not found!");
+        }
+      }
+
+      function downloadPayslip() {
+        const { jsPDF } = window.jspdf;
+        const element = document.getElementById("payslip");
+
+        html2canvas(element, { scale: 2 }).then((canvas) => {
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          const imgWidth = 210;
+          const pageHeight = 297;
+          const imgHeight = canvas.height * imgWidth / canvas.width;
+          let heightLeft = imgHeight;
+          let position = 0;
+
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+
+          while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+          }
+
+          pdf.save("payslip.pdf");
+        });
+      }
+    </script>
+  </body>
+</html>
+
+
